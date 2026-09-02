@@ -16,6 +16,7 @@ The Worker also serves the static web app, so V1 does not need a separate Cloudf
 
 ## Implemented
 
+- independent GitHub repository
 - generic `counters` table
 - generic append-only `counter_entries` table
 - default Water counter
@@ -27,7 +28,7 @@ The Worker also serves the static web app, so V1 does not need a separate Cloudf
 - Cloudflare Worker + static assets
 - D1 migration
 - GitHub CI
-- Cloudflare deployment workflow
+- Cloudflare deployment workflow with a safety guard
 
 ## API
 
@@ -81,7 +82,9 @@ This project must use its own Cloudflare resources, separate from Gimme Job:
 - separate secrets
 - separate deployment
 
-Create the D1 database, then replace `REPLACE_WITH_D1_DATABASE_ID` in `wrangler.jsonc`.
+The deploy workflow intentionally refuses to deploy while `wrangler.jsonc` contains `REPLACE_WITH_D1_DATABASE_ID`. This prevents accidental deployment against an unrelated database.
+
+After creating `counter-app-db`, replace that placeholder with its database ID.
 
 Add these GitHub repository secrets:
 
@@ -98,11 +101,15 @@ npx wrangler d1 migrations apply DB --local
 npm run dev
 ```
 
+## Current status
+
+GitHub CI passes. Cloudflare deployment is intentionally blocked until the project's own D1 ID and Cloudflare repository secrets are configured.
+
 ## Next milestone
 
-1. Put this project in its own GitHub repository.
-2. Create its own D1 database.
-3. Deploy the web/API slice.
+1. Create the independent Cloudflare D1 database `counter-app-db`.
+2. Configure Cloudflare credentials in this repository.
+3. Deploy and smoke-test the web/API slice.
 4. Add Sign in with Apple.
 5. Add native iPhone app.
 6. Add watchOS app.
