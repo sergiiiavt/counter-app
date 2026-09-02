@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>Water</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">TODAY</p>
+        <h1>Water</h1>
+      </div>
+      <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh">↻</button>
+    </header>
+
+    <section class="summary" aria-live="polite">
+      <div id="total" class="total">0 <span>ml</span></div>
+      <div id="goalText" class="goal-text">of 2,000 ml</div>
+      <div class="progress" aria-hidden="true">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Quick add</h2>
+      <div id="presets" class="preset-grid">
+        <button type="button" data-amount="100">+100 ml</button>
+        <button type="button" data-amount="250">+250 ml</button>
+        <button type="button" data-amount="500">+500 ml</button>
+      </div>
+
+      <form id="customForm" class="custom-form">
+        <label for="customAmount">Custom amount</label>
+        <div class="custom-row">
+          <input id="customAmount" name="amount" type="number" inputmode="numeric" min="1" max="10000"
+                 step="1" placeholder="350" autocomplete="off">
+          <span class="unit">ml</span>
+          <button type="submit">Add</button>
+        </div>
+        <p id="formError" class="form-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section class="history-section">
+      <div class="section-heading">
+        <h2>Today</h2>
+        <span id="entryCount" class="muted"></span>
+      </div>
+      <div id="emptyState" class="empty">No water logged yet.</div>
+      <ul id="history" class="history"></ul>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+  </main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
