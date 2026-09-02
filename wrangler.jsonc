@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "counter-app",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-02",
+  "vars": {
+    "DEMO_MODE": "true"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "counter-app-db",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "assets": {
+    "directory": "./web",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  }
+}
