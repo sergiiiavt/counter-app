@@ -8,6 +8,7 @@ const state = {
   },
   total: 0,
   entries: [],
+  authMode: null,
 };
 
 const elements = {
@@ -23,6 +24,7 @@ const elements = {
   entryCount: document.querySelector("#entryCount"),
   status: document.querySelector("#status"),
   refreshButton: document.querySelector("#refreshButton"),
+  demoBanner: document.querySelector("#demoBanner"),
 };
 
 function todayLocal() {
@@ -72,6 +74,7 @@ function render() {
 
   const progress = goal ? Math.min((state.total / goal) * 100, 100) : 0;
   elements.progressBar.style.width = `${progress}%`;
+  elements.demoBanner.hidden = state.authMode !== "demo";
 
   elements.entryCount.textContent = state.entries.length
     ? `${state.entries.length} ${state.entries.length === 1 ? "entry" : "entries"}`
@@ -107,7 +110,8 @@ async function load() {
 
   try {
     const date = todayLocal();
-    const [counterPayload, dailyPayload, entriesPayload] = await Promise.all([
+    const [mePayload, counterPayload, dailyPayload, entriesPayload] = await Promise.all([
+      api("/api/me"),
       api("/api/counters"),
       api(`/api/daily?counterId=water&date=${encodeURIComponent(date)}`),
       api(`/api/entries?counterId=water&date=${encodeURIComponent(date)}`),
@@ -115,6 +119,7 @@ async function load() {
 
     const water = counterPayload.counters.find((counter) => counter.id === "water");
     if (water) state.counter = water;
+    state.authMode = mePayload.authMode;
     state.total = dailyPayload.total;
     state.entries = entriesPayload.entries;
     elements.status.textContent = "";
