@@ -10,7 +10,7 @@
     {
       "binding": "DB",
       "database_name": "counter-app-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "5f74c260-c3f7-4119-b26f-fa5e8cadcc00",
       "migrations_dir": "migrations"
     }
   ],
