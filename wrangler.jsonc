@@ -4,7 +4,9 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-09-02",
   "vars": {
-    "DEMO_MODE": "true"
+    "DEMO_MODE": "true",
+    "APPLE_CLIENT_IDS": "com.sergiiiavt.counterapp",
+    "SESSION_TTL_DAYS": "30"
   },
   "d1_databases": [
     {
