@@ -1,10 +1,11 @@
 {
   "name": "counter-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check src/worker.js && node --check web/app.js",
+    "check": "node --check src/auth.js && node --check src/worker.js && node --check web/app.js",
+    "test": "node --test",
     "dev": "wrangler dev",
     "migrate:remote": "wrangler d1 migrations apply DB --remote",
     "deploy": "wrangler deploy"
