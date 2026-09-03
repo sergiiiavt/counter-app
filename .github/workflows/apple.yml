@@ -1,0 +1,47 @@
+name: Apple Build
+
+on:
+  pull_request:
+    paths:
+      - "apps/apple/**"
+      - ".github/workflows/apple.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/apple/**"
+      - ".github/workflows/apple.yml"
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: apps/apple
+        run: xcodegen generate
+
+      - name: Build iPhone app for simulator
+        working-directory: apps/apple
+        run: >-
+          xcodebuild
+          -project CounterApp.xcodeproj
+          -scheme CounterApp
+          -configuration Debug
+          -sdk iphonesimulator
+          CODE_SIGNING_ALLOWED=NO
+          build
+
+      - name: Build Watch app for simulator
+        working-directory: apps/apple
+        run: >-
+          xcodebuild
+          -project CounterApp.xcodeproj
+          -scheme CounterWatch
+          -configuration Debug
+          -sdk watchsimulator
+          CODE_SIGNING_ALLOWED=NO
+          build

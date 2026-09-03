@@ -1,3 +1,11 @@
+import {
+  AuthError,
+  deleteUserAccount,
+  exchangeAppleIdentityToken,
+  resolveUser,
+  revokeCurrentSession,
+} from "./auth.js";
+
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
@@ -18,15 +26,6 @@ function isDateOnly(value) {
     date.getUTCMonth() === month - 1 &&
     date.getUTCDate() === day
   );
-}
-
-function currentUser(env) {
-  // V1 development mode only.
-  // Production must replace this with validated authentication.
-  if (String(env.DEMO_MODE).toLowerCase() === "true") {
-    return { id: "demo-user" };
-  }
-  return null;
 }
 
 async function ensureDefaultWaterCounter(db, userId) {
@@ -66,18 +65,34 @@ async function handleApi(request, env, url) {
     return json({ ok: true, service: "counter-app", time: new Date().toISOString() });
   }
 
-  const user = currentUser(env);
-  if (!user) {
-    return json(
-      {
-        error: "authentication_required",
-        message: "Authentication is not configured yet. DEMO_MODE is disabled.",
-      },
-      401,
-    );
+  if (url.pathname === "/api/auth/apple" && request.method === "POST") {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return json({ error: "invalid_json" }, 400);
+    }
+
+    const session = await exchangeAppleIdentityToken(body.identityToken, env);
+    return json({ session }, 201);
   }
 
+  const user = await resolveUser(request, env);
   await ensureDefaultWaterCounter(env.DB, user.id);
+
+  if (url.pathname === "/api/me" && request.method === "GET") {
+    return json({ authenticated: user.authMode !== "demo", authMode: user.authMode });
+  }
+
+  if (url.pathname === "/api/auth/logout" && request.method === "POST") {
+    await revokeCurrentSession(user, env);
+    return json({ loggedOut: true });
+  }
+
+  if (url.pathname === "/api/account" && request.method === "DELETE") {
+    await deleteUserAccount(user, env);
+    return json({ deleted: true });
+  }
 
   if (url.pathname === "/api/counters" && request.method === "GET") {
     const result = await env.DB
@@ -242,6 +257,9 @@ export default {
 
       return env.ASSETS.fetch(request);
     } catch (error) {
+      if (error instanceof AuthError) {
+        return json({ error: error.code, message: error.message }, error.status);
+      }
       console.error("Unhandled request error", error);
       return json({ error: "internal_error" }, 500);
     }

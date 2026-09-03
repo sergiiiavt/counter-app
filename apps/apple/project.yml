@@ -1,0 +1,61 @@
+name: CounterApp
+options:
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "18.0"
+    watchOS: "11.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 0.1.0
+
+targets:
+  CounterApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: iOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sergiiiavt.counterapp
+        PRODUCT_NAME: Water
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Water
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        CODE_SIGN_ENTITLEMENTS: iOS/CounterApp.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - target: CounterWatch
+        embed: true
+
+  CounterWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: Shared
+      - path: watchOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sergiiiavt.counterapp.watchkitapp
+        PRODUCT_NAME: Water Watch
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Water
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sergiiiavt.counterapp
+        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: YES
+        TARGETED_DEVICE_FAMILY: "4"
+
+schemes:
+  CounterApp:
+    build:
+      targets:
+        CounterApp: all
+    run:
+      config: Debug
+  CounterWatch:
+    build:
+      targets:
+        CounterWatch: all
+    run:
+      config: Debug
