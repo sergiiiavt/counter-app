@@ -36,6 +36,16 @@ h2 { margin: 28px 0 12px; font-size: 17px; }
   color: #34516e;
   font-size: 24px;
 }
+.demo-banner {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid #d9c58f;
+  border-radius: 14px;
+  background: #fff8df;
+  color: #5f4c1d;
+  font-size: 14px;
+  line-height: 1.4;
+}
 .summary {
   margin-top: 24px;
   padding: 24px;
